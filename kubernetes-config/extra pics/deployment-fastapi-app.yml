@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+#  unique key for the deployment instance
+  name: my-webapp-fast
+
+spec:
+#   3 pods should exist at all the time
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-webapp-fast
+
+  template:
+    metadata:
+      labels:
+#        apply this label to pods and default
+#        the deployment label selector to this value
+
+        app: my-webapp-fast
+    spec:
+      containers:
+        - name: my-webapp-fast
+
+#          run this image
+          image : arshadselteq311/myfastapiapp:05
+
+

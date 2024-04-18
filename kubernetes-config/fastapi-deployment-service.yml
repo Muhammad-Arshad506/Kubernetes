@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+#  unique key for the deployment instance
+  name: my-webapp-fast
+
+spec:
+#   3 pods should exist at all the time
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-webapp-fast
+
+  template:
+    metadata:
+      labels:
+#        apply this label to pods and default
+#        the deployment label selector to this value
+
+        app: my-webapp-fast
+    spec:
+      containers:
+        - name: my-webapp-fast
+#          run this image
+          image : arshadselteq311/myfastapiapp:02
+          env:
+            - name: MONGODB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-config
+                  key: MONGODB_URL
+            - name: MONGODB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-config
+                  key: MONGODB_PORT
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+#  unique key for service
+  name: fastapi-example
+
+spec:
+  ports:
+    #    accept traffic send to port 80
+    - name: http
+      port: 8000
+      #target port where your app is listens
+      targetPort: 8000
+  selector:
+    #Loadbalance traffic across pods matching
+    # this label selector
+    app: my-webapp-fast
+
+  type:
+    LoadBalancer
